@@ -1,5 +1,10 @@
 <template>
-  <Alert variant="danger" :message="alert.message" :show="alert.show" />
+  <Alert
+    :variant="alert.variant"
+    :message="alert.message"
+    :show="alert.show"
+    @close="alert.show = false"
+  />
 
   <TodoForm
     title="Agregar"
@@ -12,28 +17,33 @@
   import Alert from '../components/Alert.vue';
   import TodoForm from '../components/TodoForm.vue';
 
-  import { reactive, ref } from 'vue';
+  import { ref } from 'vue';
   import axios from 'axios';
   import { useRouter } from 'vue-router';
+  import { useAlert } from '../composables/alert';
 
-  const alert = reactive({
-    message: '',
-    show: false
-  });
+  const { alert, showAlert } = useAlert();
+
   const isCreatingTodo = ref(false);
 
   const router = useRouter();
 
-  async function submit(todo) {
+  async function submit(todo = {}) {
+    if (Object.values(todo).every(value => value === '')) {
+      showAlert('You have to fill all the inputs');
+      return;
+    }
     isCreatingTodo.value = true;
     try {
       await axios.post('/api/todos', todo);
       router.push('/');
     } catch (e) {
-      alert.show = true;
-      alert.message = 'Failed creating todo';
+      showAlert('Failed creating todo');
     }
     isCreatingTodo.value = false;
+    todo.title = '';
+    todo.description = '';
+    todo.date = '';
   }
 </script>
 

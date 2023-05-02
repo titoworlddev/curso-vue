@@ -1,7 +1,12 @@
 <template>
   <Spinner v-if="isLoading" class="spinner" />
 
-  <Alert variant="danger" :message="alert.message" :show="alert.show" />
+  <Alert
+    :variant="alert.variant"
+    :message="alert.message"
+    :show="alert.show"
+    @close="alert.show = false"
+  />
 
   <TodoForm
     v-if="todo !== null"
@@ -13,7 +18,7 @@
 </template>
 
 <script setup>
-  import { reactive, ref } from 'vue';
+  import { ref } from 'vue';
   import axios from 'axios';
 
   import Spinner from '../components/Spinner.vue';
@@ -21,21 +26,18 @@
   import TodoForm from '../components/TodoForm.vue';
   import { useFetch } from '../composables/fetch';
   import { useRouter } from 'vue-router';
+  import { useAlert } from '../composables/alert';
 
   const props = defineProps(['id']);
 
-  const alert = reactive({
-    message: '',
-    show: false
-  });
+  const { alert, showAlert } = useAlert();
   const isUpdatingTodo = ref(false);
 
   const router = useRouter();
 
   const { data: todo, isLoading } = useFetch(`/api/todos/${props.id}`, {
     onError: () => {
-      alert.show = true;
-      alert.message = 'Failed loading todo';
+      showAlert('Failed loading todo');
     }
   });
 
@@ -45,8 +47,7 @@
       await axios.put(`/api/todos/${props.id}`, todo);
       router.push('/');
     } catch (e) {
-      alert.show = true;
-      alert.message = 'Failed updating todo';
+      showAlert('Failed updating todo');
     }
     isUpdatingTodo.value = false;
   }

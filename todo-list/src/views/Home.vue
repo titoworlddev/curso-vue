@@ -25,25 +25,17 @@
   import Todo from '@/components/Todo.vue';
   import Spinner from '@/components/Spinner.vue';
   import axios from 'axios';
-  import { reactive, ref } from 'vue';
+  import { ref } from 'vue';
   import { useFetch } from '@/composables/fetch';
+  import { useAlert } from '../composables/alert';
 
-  const alert = reactive({
-    show: false,
-    message: '',
-    variant: 'danger'
-  });
+  const { alert, showAlert } = useAlert();
+
   const isPostingTodo = ref(false);
 
   const { data: todos, isLoading } = useFetch('/api/todos', {
     onError: () => showAlert('Failed loading todos')
   });
-
-  function showAlert(message, variant = 'danger') {
-    alert.show = true;
-    alert.message = message;
-    alert.variant = variant;
-  }
 
   async function addTodo(title) {
     if (!title) {
