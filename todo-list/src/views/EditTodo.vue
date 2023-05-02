@@ -3,39 +3,23 @@
 
   <Alert variant="danger" :message="alert.message" :show="alert.show" />
 
-  <div v-if="todo !== null" class="form">
-    <h1>Edit Todo</h1>
-    <form class="edit-todo-form" @submit.prevent="submit">
-      <label>
-        Todo Title
-        <input type="text" v-model="todo.title" />
-      </label>
-      <label>
-        Todo Description
-        <input type="text" v-model="todo.description" />
-      </label>
-      <label>
-        Todo Date
-        <input type="date" v-model="todo.date" />
-      </label>
-
-      <div class="submit">
-        <Btn :disabled="isUpdatingTodo">
-          <Spinner v-if="isUpdatingTodo" class="spinner" />
-          <span v-else>Submit</span>
-        </Btn>
-      </div>
-    </form>
-  </div>
+  <TodoForm
+    v-if="todo !== null"
+    title="Edit"
+    :todo="todo"
+    :isSubmiting="isUpdatingTodo"
+    @submit="todo => submit(todo)"
+  />
 </template>
 
 <script setup>
-  import Btn from '@/components/Btn.vue';
-  import { useFetch } from '../composables/fetch';
-  import Spinner from '../components/Spinner.vue';
-  import Alert from '../components/Alert.vue';
   import { reactive, ref } from 'vue';
   import axios from 'axios';
+
+  import Spinner from '../components/Spinner.vue';
+  import Alert from '../components/Alert.vue';
+  import TodoForm from '../components/TodoForm.vue';
+  import { useFetch } from '../composables/fetch';
   import { useRouter } from 'vue-router';
 
   const props = defineProps(['id']);
@@ -55,10 +39,10 @@
     }
   });
 
-  async function submit() {
+  async function submit(todo) {
     isUpdatingTodo.value = true;
     try {
-      await axios.put(`/api/todos/${props.id}`, todo.value);
+      await axios.put(`/api/todos/${props.id}`, todo);
       router.push('/');
     } catch (e) {
       alert.show = true;
@@ -69,35 +53,6 @@
 </script>
 
 <style scoped>
-  .form {
-    background-color: var(--navbar-color);
-    padding: 20px;
-    border-radius: 10px;
-  }
-
-  .edit-todo-form {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-  }
-
-  .edit-todo-form input {
-    width: 100%;
-    height: 30px;
-    border: 1px solid var(--accent-color);
-  }
-
-  .submit {
-    margin-top: 20px;
-    display: flex;
-    justify-content: end;
-  }
-
-  .submit button {
-    height: 50px;
-    width: 80px;
-  }
-
   .spinner {
     margin: auto;
   }

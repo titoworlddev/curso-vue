@@ -1,36 +1,17 @@
 <template>
   <Alert variant="danger" :message="alert.message" :show="alert.show" />
 
-  <div class="form">
-    <h1>Add Todo</h1>
-    <form class="add-todo-form" @submit.prevent="submit">
-      <label>
-        Todo Title
-        <input class="title-input" type="text" v-model="todo.title" />
-      </label>
-      <label>
-        Todo Description
-        <input type="text" v-model="todo.description" />
-      </label>
-      <label>
-        Todo Date
-        <input type="date" v-model="todo.date" />
-      </label>
-
-      <div class="submit">
-        <Btn :disabled="isCreatingTodo">
-          <Spinner v-if="isCreatingTodo" class="spinner" />
-          <span v-else>Submit</span>
-        </Btn>
-      </div>
-    </form>
-  </div>
+  <TodoForm
+    title="Agregar"
+    :isSubmiting="isCreatingTodo"
+    @submit="todo => submit(todo)"
+  />
 </template>
 
 <script setup>
-  import Btn from '@/components/Btn.vue';
-  import Spinner from '../components/Spinner.vue';
   import Alert from '../components/Alert.vue';
+  import TodoForm from '../components/TodoForm.vue';
+
   import { reactive, ref } from 'vue';
   import axios from 'axios';
   import { useRouter } from 'vue-router';
@@ -41,15 +22,9 @@
   });
   const isCreatingTodo = ref(false);
 
-  const todo = reactive({
-    title: '',
-    description: '',
-    date: ''
-  });
-
   const router = useRouter();
 
-  async function submit() {
+  async function submit(todo) {
     isCreatingTodo.value = true;
     try {
       await axios.post('/api/todos', todo);
