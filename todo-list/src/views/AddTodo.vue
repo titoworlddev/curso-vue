@@ -1,14 +1,12 @@
 <template>
-  <Spinner v-if="isLoading" class="spinner" />
-
   <Alert variant="danger" :message="alert.message" :show="alert.show" />
 
-  <div v-if="todo !== null" class="form">
-    <h1>Edit Todo</h1>
-    <form class="edit-todo-form" @submit.prevent="submit">
+  <div class="form">
+    <h1>Add Todo</h1>
+    <form class="add-todo-form" @submit.prevent="submit">
       <label>
         Todo Title
-        <input type="text" v-model="todo.title" />
+        <input class="title-input" type="text" v-model="todo.title" />
       </label>
       <label>
         Todo Description
@@ -20,8 +18,8 @@
       </label>
 
       <div class="submit">
-        <Btn :disabled="isUpdatingTodo">
-          <Spinner v-if="isUpdatingTodo" class="spinner" />
+        <Btn :disabled="isCreatingTodo">
+          <Spinner v-if="isCreatingTodo" class="spinner" />
           <span v-else>Submit</span>
         </Btn>
       </div>
@@ -31,40 +29,36 @@
 
 <script setup>
   import Btn from '@/components/Btn.vue';
-  import { useFetch } from '../composables/fetch';
   import Spinner from '../components/Spinner.vue';
   import Alert from '../components/Alert.vue';
   import { reactive, ref } from 'vue';
   import axios from 'axios';
   import { useRouter } from 'vue-router';
 
-  const props = defineProps(['id']);
-
   const alert = reactive({
     message: '',
     show: false
   });
-  const isUpdatingTodo = ref(false);
+  const isCreatingTodo = ref(false);
+
+  const todo = reactive({
+    title: '',
+    description: '',
+    date: ''
+  });
 
   const router = useRouter();
 
-  const { data: todo, isLoading } = useFetch(`/api/todos/${props.id}`, {
-    onError: () => {
-      alert.show = true;
-      alert.message = 'Failed loading todo';
-    }
-  });
-
   async function submit() {
-    isUpdatingTodo.value = true;
+    isCreatingTodo.value = true;
     try {
-      await axios.put(`/api/todos/${props.id}`, todo.value);
+      await axios.post('/api/todos', todo);
       router.push('/');
     } catch (e) {
       alert.show = true;
-      alert.message = 'Failed updating todo';
+      alert.message = 'Failed creating todo';
     }
-    isUpdatingTodo.value = false;
+    isCreatingTodo.value = false;
   }
 </script>
 
@@ -75,13 +69,13 @@
     border-radius: 10px;
   }
 
-  .edit-todo-form {
+  .add-todo-form {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
   }
 
-  .edit-todo-form input {
+  .add-todo-form input {
     width: 100%;
     height: 30px;
     border: 1px solid var(--accent-color);

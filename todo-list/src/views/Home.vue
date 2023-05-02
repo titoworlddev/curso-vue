@@ -7,10 +7,6 @@
   />
 
   <section>
-    <AddTodoForm :isLoading="isPostingTodo" @submit="addTodo" />
-  </section>
-
-  <section>
     <Spinner class="spinner" v-if="isLoading" />
     <div v-else>
       <Todo
@@ -25,7 +21,6 @@
 </template>
 
 <script setup>
-  import AddTodoForm from '@/components/AddTodoForm.vue';
   import Alert from '@/components/Alert.vue';
   import Todo from '@/components/Todo.vue';
   import Spinner from '@/components/Spinner.vue';

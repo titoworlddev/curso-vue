@@ -2,15 +2,27 @@
   "todos": [
     {
       "id": 1,
-      "title": "Pasear al perro"
+      "title": "Hacer la compra",
+      "description": "Patatas, Pollo, Arroz, Leche",
+      "date": "2022-08-05"
     },
     {
       "id": 2,
-      "title": "Refactorizar proyecto"
+      "title": "Aprender frameworks",
+      "description": "Vue, React",
+      "date": "2022-09-01"
     },
     {
-      "title": "Test",
-      "id": 3
+      "id": 3,
+      "title": "Pasear al perro",
+      "description": "Descripcion",
+      "date": "2022-08-04"
+    },
+    {
+      "title": "Test 2",
+      "description": "This is a description",
+      "date": "2023-05-21",
+      "id": 4
     }
   ]
 }

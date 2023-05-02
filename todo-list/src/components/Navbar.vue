@@ -8,6 +8,7 @@
     <div class="links">
       <ul>
         <li><RouterLink to="/">Home</RouterLink></li>
+        <li><RouterLink to="/todos/add">Add Todo</RouterLink></li>
         <li><RouterLink to="/about">About</RouterLink></li>
       </ul>
     </div>
@@ -39,7 +40,7 @@
     padding: 20px;
     margin: 0;
     list-style: none;
-    gap: 10px;
+    gap: 16px;
   }
 
   .links a {

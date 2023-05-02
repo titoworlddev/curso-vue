@@ -1,6 +1,8 @@
 <template>
   <div class="todo">
     <p>{{ todo.title }}</p>
+    <p>{{ todo.description }}</p>
+    <p>{{ todo.date }}</p>
     <div>
       <Btn
         circle
@@ -54,5 +56,12 @@
 
   .edit-todo-btn {
     margin-right: 5px;
+  }
+
+  @media (max-width: 680px) {
+    .todo {
+      flex-direction: column;
+      padding: 20px;
+    }
   }
 </style>
